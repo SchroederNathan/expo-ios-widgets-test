@@ -27,17 +27,14 @@
       [
         "expo-widgets",
         {
-          "groupIdentifier": "group.com.example.myapp",
+          "groupIdentifier": "group.com.schroedernathan.expo-widgets-test",
           "enablePushNotifications": true,
           "widgets": [
             {
               "name": "MyWidget",
               "displayName": "My Widget",
               "description": "Shows my test widget with a count",
-              "supportedFamilies": [
-                "systemSmall",
-                "systemMedium"
-              ]
+              "supportedFamilies": ["systemSmall", "systemMedium"]
             }
           ]
         }

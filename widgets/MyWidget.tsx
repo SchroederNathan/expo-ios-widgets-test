@@ -1,9 +1,12 @@
-import { HStack, Text, VStack } from '@expo/ui/swift-ui';
-import { createWidget, WidgetEnvironment } from "expo-widgets";
+import { Button, HStack, Text, VStack } from '@expo/ui/swift-ui';
+import { addUserInteractionListener, createWidget, WidgetEnvironment } from "expo-widgets";
+import { useEffect } from 'react';
 
 type MyWidgetProps = {
     count: number;
 }
+
+
 
 const MyWidget = (props: MyWidgetProps, environment: WidgetEnvironment) => {
     'widget';
@@ -12,16 +15,38 @@ const MyWidget = (props: MyWidgetProps, environment: WidgetEnvironment) => {
         return (
             <VStack>
                 <Text>{props.count}</Text>
-                <Text>SMALL WIDGET</Text>
+                <HStack>
+                    <Button
+                        label="-"
+                        target="decrement"
+                        onPress={() => ({ count: props.count - 1 })}
+                    />
+                    <Button
+                        label="+"
+                        target="increment"
+                        onPress={() => ({ count: props.count + 1 })}
+                    />
+                </HStack>
             </VStack>
         );
     }
 
     return (
-        <HStack>
+        <VStack>
             <Text>{props.count}</Text>
-            <Text>SMALL WIDGET</Text>
-        </HStack>
+            <HStack>
+                <Button
+                    label="-"
+                    target="decrement"
+                    onPress={() => ({ count: props.count - 1 })}
+                />
+                <Button
+                    label="+"
+                    target="increment"
+                    onPress={() => ({ count: props.count + 1 })}
+                />
+            </HStack>
+        </VStack>
     );
 
 }
