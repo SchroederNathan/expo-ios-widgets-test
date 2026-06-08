@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "scheme": "expowidgetstest",
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.schroedernathan.expo-widgets-test"
@@ -31,14 +32,39 @@
           "enablePushNotifications": true,
           "widgets": [
             {
-              "name": "MyWidget",
-              "displayName": "My Widget",
-              "description": "Shows my test widget with a count",
-              "supportedFamilies": ["systemSmall", "systemMedium"]
+              "name": "MailWidget",
+              "displayName": "Mailbox",
+              "description": "Jump straight to Inbox, Starred, Drafts, or Compose — each opens its own screen.",
+              "contentMarginsDisabled": true,
+              "supportedFamilies": [
+                "systemSmall",
+                "systemMedium"
+              ]
+            },
+            {
+              "name": "HydrationWidget",
+              "displayName": "Hydration",
+              "description": "Log water straight from the home screen and watch the bottle fill.",
+              "contentMarginsDisabled": true,
+              "supportedFamilies": [
+                "systemSmall",
+                "systemMedium"
+              ]
+            },
+            {
+              "name": "DayArcWidget",
+              "displayName": "Day Arc",
+              "description": "A living clock that shows how much of your waking day is left.",
+              "contentMarginsDisabled": true,
+              "supportedFamilies": [
+                "systemSmall",
+                "systemMedium"
+              ]
             }
           ]
         }
-      ]
+      ],
+      "expo-router"
     ]
   }
 }
