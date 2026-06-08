@@ -9,20 +9,13 @@ export type Mail = {
   color: string;
 };
 
+// Avatar colors come from the shared system-accent family so they match the
+// app accents and the Mailbox widget exactly.
 export const INBOX: Mail[] = [
-  { id: 0, from: 'GitHub', subject: 'Your build passed ✓', preview: 'Workflow “iOS” completed on main', body: 'Workflow “iOS” completed successfully on main in 4m 12s. All checks are green and the artifact is ready to download.', time: '9:41', unread: true, color: '#22D3EE' },
-  { id: 1, from: 'Linear', subject: 'WID-42 assigned to you', preview: 'Add Mailbox widget deep links', body: 'Nate assigned WID-42 “Add Mailbox widget deep links” to you. The widget should route each inbox item to its own message screen via Expo Router.', time: '8:12', unread: true, color: '#A78BFA' },
-  { id: 2, from: 'Expo', subject: 'SDK 56 is here', preview: 'Widgets & Live Activities, no native code', body: 'Expo SDK 56 ships expo-widgets — build iOS home screen widgets and Live Activities entirely with Expo UI components.', time: 'Tue', color: '#34D399' },
-  { id: 3, from: 'Vercel', subject: 'Deployment ready', preview: 'widget-studio-app is live in production', body: 'Your deployment of widget-studio-app finished and is now live in production.', time: 'Tue', color: '#F87171' },
+  { id: 0, from: 'Test Sender 1', subject: 'Test email 1', preview: 'This is the preview for test email 1', body: 'This is the body of test email 1. It contains some placeholder text used for previewing the mail screens and widget.', time: '9:41', unread: true, color: '#0A84FF' },
+  { id: 1, from: 'Test Sender 2', subject: 'Test email 2', preview: 'This is the preview for test email 2', body: 'This is the body of test email 2. It contains some placeholder text used for previewing the mail screens and widget.', time: '8:12', unread: true, color: '#BF5AF3' },
+  { id: 2, from: 'Test Sender 3', subject: 'Test email 3', preview: 'This is the preview for test email 3', body: 'This is the body of test email 3. It contains some placeholder text used for previewing the mail screens and widget.', time: 'Tue', color: '#30D158' },
+  { id: 3, from: 'Test Sender 4', subject: 'Test email 4', preview: 'This is the preview for test email 4', body: 'This is the body of test email 4. It contains some placeholder text used for previewing the mail screens and widget.', time: 'Tue', color: '#FF9F0A' },
 ];
-export const STARRED: Mail[] = [
-  { id: 10, from: 'Mom', subject: 'Sunday dinner?', preview: 'Bring the new phone, show me the widgets', body: 'Are you coming Sunday? Bring the new phone — I want to see those widgets you keep talking about.', time: 'Wed', color: '#FBBF24' },
-  { id: 11, from: 'Apple Developer', subject: 'TestFlight build ready', preview: 'Build 1.0 (3) is ready to test', body: 'Build 1.0 (3) of Widget Studio has finished processing and is ready to test in TestFlight.', time: 'Mon', color: '#60A5FA' },
-];
-export const DRAFTS: Mail[] = [
-  { id: 20, from: 'To: design@', subject: 'Re: widget polish', preview: 'A couple more ideas for the Day Arc…', body: 'A couple more ideas for the Day Arc ring — maybe a softer gradient at night and a subtle glow at golden hour.', time: '—', color: '#A78BFA' },
-];
-
-const ALL = [...INBOX, ...STARRED, ...DRAFTS];
-export const findMail = (id: number) => ALL.find((m) => m.id === id);
+export const findMail = (id: number) => INBOX.find((m) => m.id === id);
 export const unreadCount = () => INBOX.filter((m) => m.unread).length;

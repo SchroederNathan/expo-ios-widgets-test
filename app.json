@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "expowidgetstest",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.schroedernathan.expo-widgets-test"
@@ -34,7 +34,7 @@
             {
               "name": "MailWidget",
               "displayName": "Mailbox",
-              "description": "Jump straight to Inbox, Starred, Drafts, or Compose — each opens its own screen.",
+              "description": "Jump straight to your unread inbox and recent messages — each opens its own screen.",
               "contentMarginsDisabled": true,
               "supportedFamilies": [
                 "systemSmall",
@@ -64,7 +64,8 @@
           ]
         }
       ],
-      "expo-router"
+      "expo-router",
+      "expo-image"
     ]
   }
 }

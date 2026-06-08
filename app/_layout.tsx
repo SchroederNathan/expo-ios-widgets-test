@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 import { GOAL, Hydration, useGlasses } from '../lib/hydration';
 import { INBOX, unreadCount } from '../lib/mail';
+import { colors } from '../lib/ui';
 import DayArcWidget from '../widgets/DayArcWidget';
 import HydrationWidget from '../widgets/HydrationWidget';
 import MailWidget from '../widgets/MailWidget';
@@ -47,8 +48,17 @@ export default function RootLayout() {
 
   return (
     <>
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0A0A12' } }} />
-      <StatusBar style="light" />
+      <Stack
+        screenOptions={{
+          headerLargeTitle: true,
+          headerShadowVisible: false,
+          headerBackButtonDisplayMode: 'minimal',
+          contentStyle: { backgroundColor: colors.background },
+        }}>
+        <Stack.Screen name="index" options={{ title: 'Widget Studio' }} />
+        <Stack.Screen name="mail/message/[id]" options={{ headerLargeTitle: false }} />
+      </Stack>
+      <StatusBar style="auto" />
     </>
   );
 }

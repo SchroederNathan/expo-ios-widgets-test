@@ -31,16 +31,22 @@ type MailProps = {
 // deep-link into their own message screen (expowidgetstest://mail/message/<id>).
 const MailWidget = (props: MailProps, environment: WidgetEnvironment) => {
   'widget';
-  const INK = '#0A0F1E';
+  // Shared palette (matches the app's system accents + the other widgets).
+  const INK = '#091019'; // unified dark surface across all widgets
+  const GLOW = '#1D3451'; // blue-tinted radial glow
+  const BLUE = '#0A84FF'; // systemBlue (dark)
+  const SECONDARY = '#B3BFCE';
+  const TERTIARY = '#7A8798';
   const unread = Math.max(0, props.unread);
   const items = props.items ?? [];
+  const firstId = items[0] ? items[0].id : 0;
 
   const backdrop = (
     <Rectangle
       modifiers={[
         foregroundStyle({
           type: 'radialGradient',
-          colors: ['#16233F', INK],
+          colors: [GLOW, INK],
           center: { x: 0.5, y: 0.1 },
           startRadius: 0,
           endRadius: 260,
@@ -49,20 +55,6 @@ const MailWidget = (props: MailProps, environment: WidgetEnvironment) => {
         ignoreSafeArea(),
       ]}
     />
-  );
-
-  const composeIcon = (
-    <Link destination="expowidgetstest://mail/compose">
-      <HStack
-        spacing={4}
-        modifiers={[padding({ horizontal: 9, vertical: 5 }), background('#60A5FA'), cornerRadius(9)]}>
-        <Image
-          systemName="square.and.pencil"
-          modifiers={[font({ size: 11, weight: 'bold' }), foregroundStyle('#0A0F1E')]}
-        />
-        <Text modifiers={[font({ size: 11, weight: 'bold' }), foregroundStyle('#0A0F1E')]}>Compose</Text>
-      </HStack>
-    </Link>
   );
 
   // One tappable inbox preview that deep-links to its message screen.
@@ -80,13 +72,13 @@ const MailWidget = (props: MailProps, environment: WidgetEnvironment) => {
         <VStack alignment="leading" spacing={1}>
           <HStack spacing={5}>
             {it.unread ? (
-              <Circle modifiers={[frame({ width: 7, height: 7 }), foregroundStyle('#60A5FA')]} />
+              <Circle modifiers={[frame({ width: 7, height: 7 }), foregroundStyle(BLUE)]} />
             ) : null}
             <Text modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#FFFFFF')]}>{it.from}</Text>
             <Spacer />
-            <Text modifiers={[font({ size: 10 }), foregroundStyle('#7E8DA8')]}>{it.time}</Text>
+            <Text modifiers={[font({ size: 10 }), foregroundStyle(TERTIARY)]}>{it.time}</Text>
           </HStack>
-          <Text modifiers={[font({ size: 12, weight: 'medium' }), foregroundStyle('#B7C4DC')]}>{it.subject}</Text>
+          <Text modifiers={[font({ size: 12, weight: 'medium' }), foregroundStyle(SECONDARY)]}>{it.subject}</Text>
         </VStack>
       </HStack>
     </Link>
@@ -98,12 +90,12 @@ const MailWidget = (props: MailProps, environment: WidgetEnvironment) => {
         {backdrop}
         <VStack alignment="leading" spacing={6} modifiers={[padding({ all: 14 })]}>
           <HStack spacing={6}>
-            <Image systemName="tray.full.fill" modifiers={[font({ size: 14 }), foregroundStyle('#60A5FA')]} />
+            <Image systemName="tray.full.fill" modifiers={[font({ size: 14 }), foregroundStyle(BLUE)]} />
             <Text modifiers={[font({ size: 14, weight: 'bold', design: 'rounded' }), foregroundStyle('#FFFFFF')]}>
               Mailbox
             </Text>
           </HStack>
-          <Link destination="expowidgetstest://mail/inbox">
+          <Link destination={`expowidgetstest://mail/message/${firstId}`}>
             <HStack spacing={4}>
               <Text
                 modifiers={[
@@ -113,21 +105,10 @@ const MailWidget = (props: MailProps, environment: WidgetEnvironment) => {
                 ]}>
                 {unread}
               </Text>
-              <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle('#9DB2D6')]}>unread</Text>
+              <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle(SECONDARY)]}>unread</Text>
             </HStack>
           </Link>
           <Spacer />
-          <Link destination="expowidgetstest://mail/compose">
-            <HStack
-              spacing={6}
-              modifiers={[padding({ horizontal: 14, vertical: 9 }), background('#60A5FA'), cornerRadius(12)]}>
-              <Image
-                systemName="square.and.pencil"
-                modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#0A0F1E')]}
-              />
-              <Text modifiers={[font({ size: 13, weight: 'bold' }), foregroundStyle('#0A0F1E')]}>Compose</Text>
-            </HStack>
-          </Link>
         </VStack>
       </ZStack>
     );
@@ -140,15 +121,14 @@ const MailWidget = (props: MailProps, environment: WidgetEnvironment) => {
       {backdrop}
       <VStack alignment="leading" spacing={8} modifiers={[padding({ all: 12 })]}>
         <HStack spacing={6}>
-          <Image systemName="tray.full.fill" modifiers={[font({ size: 14 }), foregroundStyle('#60A5FA')]} />
+          <Image systemName="tray.full.fill" modifiers={[font({ size: 14 }), foregroundStyle(BLUE)]} />
           <Text modifiers={[font({ size: 15, weight: 'bold', design: 'rounded' }), foregroundStyle('#FFFFFF')]}>
             Inbox
           </Text>
-          <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle('#7E8DA8')]}>
+          <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle(TERTIARY)]}>
             {unread} unread
           </Text>
           <Spacer />
-          {composeIcon}
         </HStack>
         {items[0] ? item(items[0]) : null}
         {items[1] ? item(items[1]) : null}

@@ -24,7 +24,9 @@ type DayArcProps = {
 // colors/gradients are computed inline below.
 const DayArcWidget = (props: DayArcProps, environment: WidgetEnvironment) => {
   'widget';
-  const INK = '#120B1F';
+  // Shared palette (matches the app's system accents + the other widgets).
+  const INK = '#091019'; // unified dark surface across all widgets
+  const SECONDARY = '#B3BFCE';
   const now = environment.date;
   const wake = props.wakeHour;
   const sleep = props.sleepHour;
@@ -36,12 +38,14 @@ const DayArcWidget = (props: DayArcProps, environment: WidgetEnvironment) => {
   bedtime.setHours(Math.floor(sleep), Math.round((sleep % 1) * 60), 0, 0);
   const beforeBed = bedtime.getTime() > now.getTime();
 
-  // Palette that tracks the time of day: dawn → midday → dusk → night.
+  // Palette that tracks the time of day, drawn from the shared system-accent
+  // family. Glows are OKLCH-tuned (same lightness/chroma) so each time slot
+  // reads as the same surface, just hue-shifted.
   const h = now.getHours();
   const glow =
-    h < 6 ? '#1E1B4B' : h < 11 ? '#3B2F1E' : h < 16 ? '#143A4A' : h < 20 ? '#3D1F2E' : '#1E1B4B';
+    h < 6 ? '#2C2F51' : h < 11 ? '#472C0C' : h < 16 ? '#04384B' : h < 20 ? '#4D2528' : '#3D2949';
   const accent =
-    h < 6 ? '#818CF8' : h < 11 ? '#FBBF24' : h < 16 ? '#38BDF8' : h < 20 ? '#FB7185' : '#A78BFA';
+    h < 6 ? '#5E5CE6' : h < 11 ? '#FF9F0A' : h < 16 ? '#64D2FF' : h < 20 ? '#FF375F' : '#BF5AF3';
   const name = h < 6 ? 'Night' : h < 11 ? 'Morning' : h < 16 ? 'Afternoon' : h < 20 ? 'Evening' : 'Night';
   const icon: 'moon.stars.fill' | 'sunrise.fill' | 'sun.max.fill' | 'sunset.fill' =
     h < 6 ? 'moon.stars.fill' : h < 11 ? 'sunrise.fill' : h < 16 ? 'sun.max.fill' : h < 20 ? 'sunset.fill' : 'moon.stars.fill';
@@ -83,7 +87,7 @@ const DayArcWidget = (props: DayArcProps, environment: WidgetEnvironment) => {
         <VStack alignment="center" spacing={6} modifiers={[padding({ all: 14 })]}>
           <HStack spacing={5}>
             <Image systemName={icon} modifiers={[font({ size: 12 }), foregroundStyle(accent)]} />
-            <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle('#D6CCEF')]}>{name}</Text>
+            <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle(SECONDARY)]}>{name}</Text>
           </HStack>
           {clock}
           <ZStack alignment="center" modifiers={[frame({ width: 78, height: 78 })]}>
@@ -122,7 +126,7 @@ const DayArcWidget = (props: DayArcProps, environment: WidgetEnvironment) => {
           {clock}
           {beforeBed ? (
             <HStack spacing={5}>
-              <Text modifiers={[font({ size: 12, weight: 'medium' }), foregroundStyle('#B9ACD8')]}>until bed</Text>
+              <Text modifiers={[font({ size: 12, weight: 'medium' }), foregroundStyle(SECONDARY)]}>until bed</Text>
               <Text
                 timerInterval={{ lower: now, upper: bedtime }}
                 countsDown
@@ -130,7 +134,7 @@ const DayArcWidget = (props: DayArcProps, environment: WidgetEnvironment) => {
               />
             </HStack>
           ) : (
-            <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle('#B9ACD8')]}>
+            <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle(SECONDARY)]}>
               Rest well 🌙
             </Text>
           )}

@@ -1,74 +1,136 @@
-import { useRouter } from 'expo-router';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Link } from 'expo-router';
+import { Pressable, ScrollView, Text, View, type ColorValue } from 'react-native';
 
 import { GOAL, Hydration, useGlasses } from '../lib/hydration';
 import { INBOX } from '../lib/mail';
-import { Card, Pill, Row, styles } from '../lib/ui';
+import { accents, Card, colors, haptic, Sym } from '../lib/ui';
 
 export default function Home() {
-  const router = useRouter();
   const glasses = useGlasses();
+  const progress = Math.min(1, glasses / GOAL);
+
+  // Fraction of the waking day (07:00–23:00) that has elapsed.
+  const now = new Date();
+  const minutes = now.getHours() * 60 + now.getMinutes();
+  const dayProgress = Math.max(0, Math.min(1, (minutes - 7 * 60) / (16 * 60)));
 
   return (
-    <View style={styles.root}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.kicker}>HOME SCREEN</Text>
-        <Text style={styles.h1}>Widget Studio</Text>
-        <Text style={styles.sub}>
-          Three widgets, driven from here. The Mailbox widget shows two inbox previews — each one
-          deep-links into its own Expo Router route.
-        </Text>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      contentContainerStyle={{ padding: 16, paddingBottom: 48, gap: 16 }}>
+      <Text style={{ color: colors.secondary, fontSize: 15, lineHeight: 20, paddingHorizontal: 4 }}>
+        Three home-screen widgets, driven from this app. Each one shows a different trick — deep
+        linking, interaction, and a timeline.
+      </Text>
 
-        {/* Mailbox — multi-destination deep links via Expo Router */}
-        <Card accent="#60A5FA" icon="📬" title="Mailbox" subtitle="Two inbox previews, each its own route">
-          {INBOX.slice(0, 2).map((m) => (
-            <Pressable
-              key={m.id}
-              onPress={() => router.push(`/mail/message/${m.id}`)}
-              style={({ pressed }) => [styles.previewRow, pressed && { opacity: 0.6 }]}>
-              <View style={[styles.avatarSm, { backgroundColor: m.color + '2A' }]}>
-                <Text style={[styles.avatarSmText, { color: m.color }]}>{m.from.slice(0, 1)}</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.previewFrom} numberOfLines={1}>
-                  {m.unread ? '● ' : ''}
-                  {m.from}
-                </Text>
-                <Text style={styles.previewSub} numberOfLines={1}>
-                  {m.subject}
-                </Text>
-              </View>
-              <Text style={styles.previewUrl} numberOfLines={1}>
-                /mail/message/{m.id}
-              </Text>
-            </Pressable>
+      {/* Mailbox — each preview deep-links to its own message screen */}
+      <Card accent={accents.blue} symbol="envelope.fill" title="Mailbox" subtitle="Tap a preview — each opens its own route">
+        <View style={{ gap: 2 }}>
+          {INBOX.slice(0, 2).map((m, i) => (
+            <Link key={m.id} href={`/mail/message/${m.id}`} onPress={() => haptic.light()}>
+              <Link.Trigger>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 12,
+                    paddingVertical: 10,
+                    borderTopWidth: i === 0 ? 0 : 1,
+                    borderTopColor: colors.separator,
+                  }}>
+                  <Avatar letter={m.from[0]} color={m.color} />
+                  <View style={{ flex: 1, gap: 1 }}>
+                    <Text style={{ color: colors.label, fontSize: 15, fontWeight: '600' }} numberOfLines={1}>
+                      {m.from}
+                    </Text>
+                    <Text style={{ color: colors.secondary, fontSize: 13 }} numberOfLines={1}>
+                      {m.subject}
+                    </Text>
+                  </View>
+                  {m.unread ? (
+                    <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: accents.blue }} />
+                  ) : null}
+                  <Sym name="chevron.right" size={13} color={colors.tertiary} />
+                </View>
+              </Link.Trigger>
+              <Link.Preview />
+            </Link>
           ))}
-          <Row>
-            <Pill label="Inbox" onPress={() => router.push('/mail/inbox')} tone="ghost" accent="#60A5FA" />
-            <Pill label="Compose" onPress={() => router.push('/mail/compose')} tone="solid" accent="#34D399" />
-          </Row>
-        </Card>
+        </View>
+      </Card>
 
-        {/* Hydration */}
-        <Card accent="#22D3EE" icon="💧" title="Hydration" subtitle={`${glasses} / ${GOAL} glasses today`}>
-          <Row>
-            <Pill label="−1" onPress={() => Hydration.add(-1)} tone="ghost" accent="#22D3EE" />
-            <Pill label="+1 glass" onPress={() => Hydration.add(1)} tone="solid" accent="#22D3EE" />
-            <Pill label="Reset" onPress={() => Hydration.set(0)} tone="ghost" accent="#64748B" />
-          </Row>
-        </Card>
-
-        {/* Day Arc */}
-        <Card accent="#FB7185" icon="🌅" title="Day Arc" subtitle="Ambient · updates on its own">
-          <Text style={styles.note}>
-            Pushed a 24h timeline so the ring fills as the day passes — no taps needed.
+      {/* Hydration — interactive widget, taps log a glass */}
+      <Card
+        accent={accents.cyan}
+        symbol="drop.fill"
+        title="Hydration"
+        subtitle="Tap to log a glass — the bottle fills"
+        trailing={
+          <Text style={{ color: colors.label, fontSize: 22, fontWeight: '700', fontVariant: ['tabular-nums'] }}>
+            {glasses}
+            <Text style={{ color: colors.tertiary, fontSize: 15, fontWeight: '600' }}> / {GOAL}</Text>
           </Text>
-        </Card>
+        }>
+        <View style={{ height: 8, borderRadius: 4, backgroundColor: colors.fill, overflow: 'hidden' }}>
+          <View style={{ width: `${progress * 100}%`, height: '100%', backgroundColor: accents.cyan }} />
+        </View>
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          <Stepper symbol="minus" accent={accents.cyan} onPress={() => { haptic.light(); Hydration.add(-1); }} />
+          <Stepper symbol="plus" accent={accents.cyan} onPress={() => { haptic.medium(); Hydration.add(1); }} grow />
+          <Stepper symbol="arrow.counterclockwise" accent={colors.secondary} onPress={() => { haptic.rigid(); Hydration.set(0); }} />
+        </View>
+      </Card>
 
-        <Text style={styles.footer}>
-          Add the Mailbox widget, then tap either inbox preview to deep-link to that exact message.
+      {/* Day Arc — ambient timeline widget */}
+      <Card accent={accents.orange} symbol="sun.max.fill" title="Day Arc" subtitle="Ambient · updates on its own">
+        <View style={{ height: 8, borderRadius: 4, backgroundColor: colors.fill, overflow: 'hidden' }}>
+          <View style={{ width: `${dayProgress * 100}%`, height: '100%', backgroundColor: accents.orange }} />
+        </View>
+        <Text style={{ color: colors.secondary, fontSize: 13, lineHeight: 18 }}>
+          A 48-entry timeline is pushed to the widget so the bar fills as your waking day passes — no
+          taps needed.
         </Text>
-      </ScrollView>
+      </Card>
+    </ScrollView>
+  );
+}
+
+function Avatar(props: { letter: string; color: string }) {
+  return (
+    <View
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: props.color + '2A',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Text style={{ color: props.color, fontSize: 16, fontWeight: '700' }}>
+        {props.letter.toUpperCase()}
+      </Text>
     </View>
+  );
+}
+
+function Stepper(props: { symbol: string; accent: ColorValue; onPress: () => void; grow?: boolean }) {
+  return (
+    <Pressable
+      onPress={props.onPress}
+      style={({ pressed }) => [
+        {
+          flex: props.grow ? 1 : 0,
+          width: props.grow ? undefined : 52,
+          height: 44,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 12,
+          borderCurve: 'continuous',
+          backgroundColor: colors.fill,
+        },
+        pressed && { opacity: 0.6 },
+      ]}>
+      <Sym name={props.symbol} size={18} color={props.accent} />
+    </Pressable>
   );
 }

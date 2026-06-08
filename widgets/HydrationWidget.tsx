@@ -27,7 +27,14 @@ type HydrationProps = {
 // inline below.
 const HydrationWidget = (props: HydrationProps, environment: WidgetEnvironment) => {
   'widget';
-  const INK = '#06141B';
+  // Shared palette (matches the app's system accents + the other widgets).
+  const INK = '#091019'; // unified dark surface across all widgets
+  const GLOW = '#04384B'; // cyan-tinted radial glow
+  const CYAN = '#64D2FF'; // systemCyan (dark)
+  const CYAN_SOFT = '#A9E0FF'; // lighter cyan for the subtle (minus) control
+  const GREEN = '#30D158'; // systemGreen (dark)
+  const SECONDARY = '#B3BFCE';
+  const TERTIARY = '#7A8798';
   const glasses = Math.max(0, props.glasses);
   const goal = Math.max(1, props.goal);
   const fraction = Math.min(1, glasses / goal);
@@ -39,7 +46,7 @@ const HydrationWidget = (props: HydrationProps, environment: WidgetEnvironment) 
       modifiers={[
         foregroundStyle({
           type: 'radialGradient',
-          colors: ['#0B3A44', INK],
+          colors: [GLOW, INK],
           center: { x: 0.5, y: 0.12 },
           startRadius: 0,
           endRadius: 240,
@@ -60,7 +67,7 @@ const HydrationWidget = (props: HydrationProps, environment: WidgetEnvironment) 
           frame({ width: w, height: Math.max(0, Math.round(fraction * h)) }),
           foregroundStyle({
             type: 'linearGradient',
-            colors: ['#67E8F9', '#22D3EE', '#0EA5E9'],
+            colors: ['#91DDFF', '#29C8FF', '#0FA0CE'],
             startPoint: { x: 0, y: 0 },
             endPoint: { x: 0, y: 1 },
           }),
@@ -74,7 +81,7 @@ const HydrationWidget = (props: HydrationProps, environment: WidgetEnvironment) 
       label="−"
       target="decrement"
       onPress={() => ({ ...props, glasses: Math.max(0, glasses - 1) })}
-      modifiers={[buttonStyle('bordered'), buttonBorderShape('circle'), controlSize('small'), tint('#BAE6FD')]}
+      modifiers={[buttonStyle('bordered'), buttonBorderShape('circle'), controlSize('small'), tint(CYAN_SOFT)]}
     />
   );
   const plus = (
@@ -82,7 +89,7 @@ const HydrationWidget = (props: HydrationProps, environment: WidgetEnvironment) 
       label="+"
       target="increment"
       onPress={() => ({ ...props, glasses: glasses + 1 })}
-      modifiers={[buttonStyle('borderedProminent'), buttonBorderShape('circle'), controlSize('small'), tint('#22D3EE')]}
+      modifiers={[buttonStyle('borderedProminent'), buttonBorderShape('circle'), controlSize('small'), tint(CYAN)]}
     />
   );
 
@@ -94,7 +101,7 @@ const HydrationWidget = (props: HydrationProps, environment: WidgetEnvironment) 
         {backdrop}
         <VStack alignment="center" spacing={8} modifiers={[padding({ all: 14 })]}>
           <HStack modifiers={[frame({ width: 112 })]}>
-            <Image systemName="drop.fill" modifiers={[font({ size: 13 }), foregroundStyle('#22D3EE')]} />
+            <Image systemName="drop.fill" modifiers={[font({ size: 13 }), foregroundStyle(CYAN)]} />
             <Spacer />
             <Text
               modifiers={[
@@ -144,16 +151,16 @@ const HydrationWidget = (props: HydrationProps, environment: WidgetEnvironment) 
 
         <VStack alignment="leading" spacing={9}>
           <HStack spacing={6}>
-            <Image systemName="drop.fill" modifiers={[font({ size: 15 }), foregroundStyle('#22D3EE')]} />
+            <Image systemName="drop.fill" modifiers={[font({ size: 15 }), foregroundStyle(CYAN)]} />
             <Text modifiers={[font({ size: 17, weight: 'bold', design: 'rounded' }), foregroundStyle('#FFFFFF')]}>
               Hydration
             </Text>
           </HStack>
-          <Text modifiers={[font({ size: 13, weight: 'medium' }), foregroundStyle('#9FD9EC')]}>
+          <Text modifiers={[font({ size: 13, weight: 'medium' }), foregroundStyle(SECONDARY)]}>
             {pct}% of {goal} · {oz} oz
           </Text>
           <Text
-            modifiers={[font({ size: 11, weight: 'semibold' }), foregroundStyle(fraction >= 1 ? '#34D399' : '#7DA8BC')]}>
+            modifiers={[font({ size: 11, weight: 'semibold' }), foregroundStyle(fraction >= 1 ? GREEN : TERTIARY)]}>
             {fraction >= 1 ? 'Goal reached — nice work' : `${goal - glasses} to go`}
           </Text>
           <HStack spacing={12} modifiers={[padding({ top: 2 })]}>
